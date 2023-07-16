@@ -10,7 +10,7 @@ interface Character {
 /**
  * Parent container component.
  *  - Fetches characters from the Star Wars API.
- *  - Manages the state.
+ *  - Manages the state. (Lifted state)
  */
 const StarWarsCharacters = () => {
   const [characters, setCharacters] = useState<null|Character[]>(null);
