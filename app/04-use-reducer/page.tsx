@@ -1,6 +1,6 @@
 'use client'
-import React, { useEffect, useReducer, useState } from 'react';
-import reducer from '../../state/use-reducer'
+import React, { useContext, useEffect } from 'react';
+import { StarWarsContext } from '../../state/store'
 
 interface Character {
   name: string;
@@ -14,13 +14,13 @@ interface Character {
  *  - Manages the state.
  */
 const StarWarsCharacters = () => {
-  const [characters, setCharacters] = useState<null|Character[]>(null);
+  const { state, dispatch } = useContext(StarWarsContext);
 
   const fetchAllCharacters = async () => {
     try {
       const response = await fetch('https://swapi.dev/api/people?format=json');
       const data = await response.json();
-      setCharacters(data.results);
+      dispatch({ type: 'SET_CHARACTERS', payload: data.results });
     } catch (error) {
       console.log(error);
     }
@@ -31,23 +31,21 @@ const StarWarsCharacters = () => {
   }, []);
 
   return (
-    <div>
-      {characters?.length ? (
-        <CharacterList characters={characters} />
-      ) : (
-        <p>Loading...</p>
-      )}
-    </div>
+    <StarWarsContext.Provider value={{ state, dispatch }}>
+        <CharacterList />
+    </StarWarsContext.Provider>
   );
 };
 
 /**
  * Renders a list of characters.
  */
-function CharacterList({ characters }: { characters: Character[] }) {
-  return (
+function CharacterList() {
+  const { state } = useContext(StarWarsContext);
+
+  return !state.characters.length ? <p>Loading...</p> : (
     <ul>
-      {characters.map((character) => <SingleCharacter key={character.name} character={character} />)}
+      {state.characters.map((character) => <SingleCharacter key={character.name} character={character} />)}
     </ul>
   );
 }
@@ -56,19 +54,21 @@ function CharacterList({ characters }: { characters: Character[] }) {
  * Renders a single character.
  */
 function SingleCharacter ({ character }: { character: Character }) {
-  const [state, dispatch] = useReducer(reducer, { favorites: [] });
+  const { state, dispatch } = useContext(StarWarsContext);
+  const addFave = (characterName: string): void => dispatch({ type: 'ADD_FAVE', payload: characterName });
 
-  const addFave = (character): void => dispatch({ type: 'ADD_FAVE', payload: character });
-
-  const removeFave = (character): void => dispatch({ type: 'REMOVE_FAVE', payload: character });
+  const removeFave = (characterName: string): void => dispatch({ type: 'REMOVE_FAVE', payload: characterName });
 
   return (
     <div className='p-5 bg-zinc-900 my-2'>
       <h2>{character.name}</h2>
       <p>Height: {character.height}</p>
       <p>Mass: {character.mass}</p>
-      <button onClick={() => addFave(character)}>Add to Favorites</button>
-      <button onClick={() => removeFave(character)}>Remove from Favorites</button>
+      <button onClick={() => addFave(character.name)}>Add to Favorites</button>
+      <button onClick={() => removeFave(character.name)}>Remove from Favorites</button>
+      {state.favorites.includes(character.name) && (
+        <div className="py-3 px-4 rounded-full bg-lime-600 inline-block ml-1">★</div>
+      )}
     </div>
   )
 }
