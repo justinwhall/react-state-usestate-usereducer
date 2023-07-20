@@ -1,6 +1,6 @@
 'use client'
-import React, { useContext, useEffect } from 'react';
-import { StarWarsContext } from '../../state/store'
+import React, { useContext, useEffect, useReducer } from 'react';
+import reducer, { StarWarsContext } from '../../state/store'
 
 interface Character {
   name: string;
@@ -14,7 +14,8 @@ interface Character {
  *  - Manages the state.
  */
 const StarWarsCharacters = () => {
-  const { state, dispatch } = useContext(StarWarsContext);
+  const ctx = useContext(StarWarsContext);
+  const [state, dispatch] = useReducer(reducer, ctx.state);
 
   const fetchAllCharacters = async () => {
     try {

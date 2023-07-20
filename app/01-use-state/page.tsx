@@ -6,7 +6,7 @@ export default function LocalState() {
 
   return (
     <div>
-      <h1 className="text-5xl">useEffect()</h1>
+      <h1 className="text-5xl">useState()</h1>
       <p>Count: {count}</p>
       <div>
         <button onClick={() => setCount(count + 1)}>Increment</button>
