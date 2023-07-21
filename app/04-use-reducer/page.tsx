@@ -14,6 +14,9 @@ interface Character {
  *  - Manages the state.
  */
 const StarWarsCharacters = () => {
+  /**
+   * @See new code!
+   */
   const ctx = useContext(StarWarsContext);
   const [state, dispatch] = useReducer(reducer, ctx.state);
 
@@ -56,6 +59,7 @@ function CharacterList() {
  */
 function SingleCharacter ({ character }: { character: Character }) {
   const { state, dispatch } = useContext(StarWarsContext);
+
   const addFave = (characterName: string): void => dispatch({ type: 'ADD_FAVE', payload: characterName });
 
   const removeFave = (characterName: string): void => dispatch({ type: 'REMOVE_FAVE', payload: characterName });

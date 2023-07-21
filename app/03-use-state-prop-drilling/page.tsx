@@ -14,7 +14,8 @@ interface Character {
  */
 const StarWarsCharacters = () => {
   const [characters, setCharacters] = useState<null|Character[]>(null);
-  const [favorites, setFavorites] = useState<[]|string[]>([]);
+  const [fave, setFave] = useState<string|null>(null);
+
 
   const fetchAllCharacters = async () => {
     try {
@@ -32,13 +33,11 @@ const StarWarsCharacters = () => {
 
   return (
     <div>
-      {/* Menu */}
-      {/* Favorite Charcaters */}
       <div>
-        {favorites.map(fave => <strong key={fave}>{fave}</strong>)}
+        <strong>{fave}</strong>
       </div>
       {characters?.length ? (
-        <CharacterList characters={characters} setFavorites={setFavorites}/>
+        <CharacterList characters={characters} setFave={setFave} />
       ) : (
         <p>Loading...</p>
       )}
@@ -49,10 +48,10 @@ const StarWarsCharacters = () => {
 /**
  * Renders a list of characters.
  */
-function CharacterList({ characters, setFavorites }: { characters: Character[] }) {
+function CharacterList({ characters, setFave }: { characters: Character[] }) {
   return (
     <ul>
-      {characters.map((character) => <SingleCharacter key={character.name} character={character} setFavorites={setFavorites} />)}
+      {characters.map((character) => <SingleCharacter key={character.name} character={character} setFave={setFave} />)}
     </ul>
   );
 }
@@ -60,13 +59,13 @@ function CharacterList({ characters, setFavorites }: { characters: Character[] }
 /**
  * Renders a single character.
  */
-function SingleCharacter ({ character, setFavorites }: { character: Character }) {
+function SingleCharacter ({ character, setFave }: { character: Character }) {
   return (
     <div className='p-5 bg-zinc-900 my-2'>
       <h2>{character.name}</h2>
       <p>Height: {character.height}</p>
       <p>Mass: {character.mass}</p>
-      <button onClick={() => setFavorites([character.name])}>Add to favorites</button>
+      <button onClick={() => setFave(character.name)}>Add to faves</button>
     </div>
   )
 }
